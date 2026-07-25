@@ -1,0 +1,9 @@
+{
+  "name":"cheong-xin-chen-portfolio",
+  "private":true,
+  "version":"1.0.0",
+  "type":"module",
+  "scripts":{"dev":"vite","build":"vite build","preview":"vite preview"},
+  "dependencies":{"@react-three/drei":"latest","@react-three/fiber":"latest","@react-three/rapier":"latest","meshline":"latest","react":"latest","react-dom":"latest","three":"latest"},
+  "devDependencies":{"@vitejs/plugin-react":"latest","vite":"latest"}
+}

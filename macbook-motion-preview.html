@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MacBook motion preview</title>
+  <style>
+    :root{--ink:#171717;--line:#d9d9d6;--paper:#f8f8f6;--blue:#173dff}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif;display:grid;place-items:center;overflow:hidden}
+    .stage{width:min(940px,92vw);height:min(720px,88vh);display:grid;place-items:center;position:relative}
+    .stage:before{content:"MALAYSIA NOW / MOTION STUDY";position:absolute;top:18px;left:0;font:11px/1.2 monospace;letter-spacing:.12em;color:#777}
+    .stage:after{content:"CLICK TO OPEN";position:absolute;bottom:18px;left:0;font:11px/1.2 monospace;letter-spacing:.12em;color:#777}
+    .scene{width:min(760px,90vw);height:500px;position:relative;perspective:1400px;perspective-origin:50% 62%}
+    .desk-shadow{position:absolute;left:8%;right:8%;bottom:48px;height:30px;background:rgba(0,0,0,.13);filter:blur(18px);border-radius:50%;transition:transform 1s cubic-bezier(.2,.8,.2,1),opacity 1s}
+    .laptop{position:absolute;inset:0;transform-style:preserve-3d;cursor:pointer}
+    .base{position:absolute;left:8%;right:8%;bottom:74px;height:30px;background:linear-gradient(#d7d7d7,#a6a6a6);border-radius:5px 5px 18px 18px;box-shadow:0 10px 20px rgba(0,0,0,.17);transform:rotateX(68deg);transform-origin:bottom;z-index:4}
+    .base:after{content:"";position:absolute;left:38%;right:38%;top:10px;height:3px;border-radius:4px;background:#888}
+    .screen{position:absolute;left:12%;right:12%;bottom:89px;height:310px;border:10px solid #191919;border-bottom-width:13px;border-radius:15px 15px 5px 5px;background:#191919;transform-origin:bottom center;transform:rotateX(-90deg);opacity:.02;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.2);transition:transform 1.15s cubic-bezier(.16,1,.3,1),opacity .35s;z-index:3}
+    .screen:before{content:"";position:absolute;z-index:5;top:5px;left:50%;width:5px;height:5px;transform:translateX(-50%);border-radius:50%;background:#555}
+    .screen iframe{width:100%;height:100%;border:0;display:block;background:#071127;opacity:0;transform:scale(1.035);transition:opacity .7s .55s,transform 1.1s .45s cubic-bezier(.16,1,.3,1)}
+    .lid-face{position:absolute;inset:0;background:#1b1b1b;border-radius:8px;display:grid;place-items:center;color:#777;font:12px monospace;letter-spacing:.08em;backface-visibility:hidden}
+    .lid-face:after{content:"";width:38px;height:38px;border:1px solid #555;border-radius:50%;opacity:.6}
+    .laptop.is-open .screen{transform:rotateX(0deg);opacity:1}
+    .laptop.is-open .screen iframe{opacity:1;transform:scale(1)}
+    .laptop.is-open .lid-face{opacity:0;pointer-events:none}
+    .laptop.is-open + .desk-shadow{transform:scaleX(1.12);opacity:.8}
+    .hint{position:absolute;right:0;bottom:18px;font-size:12px;color:#777}
+    button{position:absolute;top:20px;right:0;border:1px solid var(--ink);background:transparent;padding:10px 14px;font:12px monospace;letter-spacing:.04em;cursor:pointer}
+    button:hover{background:var(--ink);color:#fff}
+    button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+    @media(max-width:600px){.scene{height:390px}.screen{height:225px;left:7%;right:7%;bottom:83px}.base{left:3%;right:3%;bottom:67px}.stage:before{top:10px}.hint{display:none}}
+    @media(prefers-reduced-motion:reduce){.screen,.screen iframe,.desk-shadow{transition:none}}
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <button type="button" id="toggle">Open MacBook</button>
+    <section class="scene" aria-label="MacBook opening motion preview">
+      <div class="laptop" id="laptop" role="button" tabindex="0" aria-label="Open Malaysia Now preview">
+        <div class="screen"><div class="lid-face">MALAYSIA NOW</div><iframe src="portfolio-assets/malaysia-now-site/index.html?v=motion-preview" title="Malaysia Now preview"></iframe></div>
+        <div class="base"></div>
+      </div>
+      <div class="desk-shadow"></div>
+      <span class="hint">The screen reveals after the hinge settles.</span>
+    </section>
+  </main>
+  <script>
+    const laptop=document.querySelector('#laptop');
+    const toggle=document.querySelector('#toggle');
+    function setOpen(open){laptop.classList.toggle('is-open',open);toggle.textContent=open?'Close MacBook':'Open MacBook'}
+    toggle.addEventListener('click',()=>setOpen(!laptop.classList.contains('is-open')));
+    laptop.addEventListener('click',()=>setOpen(!laptop.classList.contains('is-open')));
+    laptop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setOpen(!laptop.classList.contains('is-open'))}});
+  </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;600;700;800&display=swap');
+:root { --ink:#11151f; --paper:#f3eee5; --coral:#ff735d; }
+* { box-sizing:border-box; }
+body { margin:0; background:#dad6ce; color:var(--ink); font-family:Manrope,sans-serif; }
+.board { max-width:1500px; margin:auto; padding:25px; }
+.board-head { display:flex; justify-content:space-between; font:10px 'DM Mono',monospace; letter-spacing:.08em; padding:8px 0 20px; }
+.options { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.mock { min-height:680px; padding:25px; position:relative; overflow:hidden; box-shadow:0 18px 45px #0002; }
+.mock-nav,.luxury-top,.play-top { display:flex; align-items:center; justify-content:space-between; font:10px 'DM Mono',monospace; letter-spacing:.06em; }
+.mock-tag { position:absolute; bottom:18px; left:25px; font:10px 'DM Mono',monospace; letter-spacing:.08em; }
+/* A */
+.signal { background:var(--ink); color:var(--paper); }
+.signal .mock-nav { border-bottom:1px solid #ffffff2b; padding-bottom:20px; }
+.signal .mock-nav i { color:var(--coral); font-style:normal; }
+.signal-main { display:grid; grid-template-columns:1.15fr .85fr; gap:15px; align-items:center; height:580px; }
+.signal small,.luxury small { font:9px 'DM Mono',monospace; letter-spacing:.1em; color:#a7abb7; }
+.signal h1 { font-size:clamp(2.3rem,4vw,4rem); line-height:.9; letter-spacing:-.08em; margin:35px 0; }
+.signal em { color:var(--coral); font-style:normal; }
+button { border:0; background:var(--coral); color:var(--ink); padding:14px 15px; font:700 10px Manrope,sans-serif; }
+.orbit-art { aspect-ratio:1; border:1px solid #ffffff2b; border-radius:50%; position:relative; display:grid; place-items:center; }
+.orbit-art:before,.orbit-art:after { content:''; position:absolute; width:125%; height:47%; border:1px solid #6c7cff; border-radius:50%; transform:rotate(45deg); }
+.orbit-art:after { transform:rotate(-20deg); border-color:#ff735d; }
+.orbit-art span { width:70px; height:70px; display:grid; place-items:center; border-radius:50%; background:var(--coral); color:var(--ink); font-weight:800; z-index:1; }
+.orbit-art i,.orbit-art b { position:absolute; width:7px; height:7px; border-radius:50%; background:var(--paper); top:15%; left:15%; }
+.orbit-art b { top:auto; left:auto; right:12%; bottom:20%; background:#6c7cff; }
+/* B */
+.luxury { background:#eee7da; color:#162a4b; font-family:'DM Serif Display',serif; }
+.luxury-top { font-family:'DM Mono',monospace; border-bottom:1px solid #162a4b55; padding-bottom:20px; }
+.luxury-main { padding:130px 0 0 11%; }
+.luxury small { color:#162a4b; font-family:'DM Mono',monospace; }
+.luxury h1 { font-size:clamp(3rem,5vw,5rem); font-weight:400; line-height:.94; letter-spacing:-.06em; margin:30px 0; }
+.luxury h1 em { color:#b9674d; }
+.luxury-line { width:55px; border-top:1px solid #162a4b; }
+.luxury p { font-size:14px; max-width:210px; line-height:1.5; }
+.luxury-mark { position:absolute; right:-40px; bottom:65px; font-size:240px; line-height:.7; opacity:.07; }
+/* C */
+.playground { background:#ff5f43; color:#1a1740; font-family:Manrope,sans-serif; }
+.play-top { border-bottom:2px solid #1a1740; padding-bottom:20px; }
+.play-top b { font-size:16px; letter-spacing:-.08em; }.play-top b span { color:#f7dd5d; }
+.play-main { padding:95px 0 0 7%; position:relative; }
+.play-main h1 { font-size:clamp(4rem,7vw,7rem); line-height:.78; letter-spacing:-.11em; margin:0; font-weight:800; }
+.play-main h1 span { color:#f7dd5d; -webkit-text-stroke:2px #1a1740; }
+.play-main p { margin-top:35px; font-size:13px; font-weight:600; }
+.sticker { position:absolute; right:2%; top:80px; background:#f7dd5d; border:2px solid #1a1740; border-radius:50%; width:84px; height:84px; display:grid; place-items:center; text-align:center; font:bold 10px 'DM Mono',monospace; transform:rotate(13deg); }
+.smiley { position:absolute; right:3%; bottom:35px; font-size:100px; font-weight:800; transform:rotate(-15deg); }
+.play-bottom { position:absolute; bottom:22px; left:25px; right:25px; border-top:2px solid #1a1740; padding-top:12px; display:flex; justify-content:space-between; font:9px 'DM Mono',monospace; }
+@media (max-width:1050px) { .options { grid-template-columns:1fr; max-width:650px; margin:auto; } .mock { min-height:620px; } }

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Eye-follow character preview</title>
+<style>
+:root{--ink:#171717;--muted:#777;--line:#dedede;--paper:#fff;--blue:#2446ff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif;display:grid;place-items:center}.preview{width:min(1080px,92vw);display:grid;grid-template-columns:.8fr 1.2fr;gap:70px;align-items:center}.eyebrow{font:11px monospace;letter-spacing:.12em;color:#777}.copy h1{font-size:clamp(40px,6vw,78px);line-height:.98;letter-spacing:-.07em;margin:18px 0 24px;max-width:430px}.copy p{max-width:330px;color:#666;line-height:1.65;font-size:14px}.copy .note{font:11px monospace;letter-spacing:.08em;color:#999;margin-top:42px}.character{position:relative;width:min(620px,100%);aspect-ratio:3/2;overflow:hidden;background:#fff}.character img{display:block;width:100%;height:100%;object-fit:fill}.eye{position:absolute;width:5.2%;aspect-ratio:1;border-radius:50%;background:#1c1714;transform:translate(-50%,-50%) translate(var(--move-x,0px),var(--move-y,0px));transition:transform .12s ease-out;box-shadow:inset 2px 2px 0 #000,1px 1px 0 rgba(0,0,0,.18);pointer-events:none}.eye:after{content:"";position:absolute;width:22%;aspect-ratio:1;border-radius:50%;background:#fff;left:24%;top:20%}.eye.left{left:45.2%;top:30.4%}.eye.right{left:53.5%;top:30.4%}.character:after{content:"MOVE YOUR CURSOR";position:absolute;bottom:18px;left:20px;font:10px monospace;letter-spacing:.1em;color:#777}.back{position:fixed;top:22px;left:4vw;font:11px monospace;letter-spacing:.1em;color:#777}@media(max-width:760px){.preview{grid-template-columns:1fr;gap:18px}.copy h1{font-size:48px;margin:12px 0}.copy .note{margin-top:18px}.character{width:100%}}
+</style>
+</head>
+<body>
+<a class="back" href="index.html">PORTFOLIO / CHARACTER STUDY</a>
+<main class="preview"><section class="copy"><span class="eyebrow">INTERACTIVE CHARACTER / 01</span><h1>He notices where you are.</h1><p>A first visual study for the portfolio hero: a friendly student character whose eyes follow the cursor.</p><p class="note">MOVE YOUR MOUSE ACROSS THE CHARACTER</p></section><section class="character" id="character" aria-label="Interactive character whose eyes follow the cursor"><img src="portfolio-assets/boy-eye-follow.png" alt="Friendly student character" /><i class="eye left"></i><i class="eye right"></i></section></main>
+<script>
+const character=document.querySelector('#character');
+character.addEventListener('pointermove',event=>{const r=character.getBoundingClientRect();const x=(event.clientX-r.left)/r.width-.5;const y=(event.clientY-r.top)/r.height-.5;const mx=(x*12).toFixed(2)+'px';const my=(y*8).toFixed(2)+'px';character.style.setProperty('--move-x',mx);character.style.setProperty('--move-y',my)});
+character.addEventListener('pointerleave',()=>{character.style.setProperty('--move-x','0px');character.style.setProperty('--move-y','0px')});
+</script>
+</body></html>
