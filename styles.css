@@ -296,3 +296,23 @@ body{overflow-x:hidden}
   .skill-tools-text>span{font-size:9px;padding:5px 6px}
 }
 
+
+/* Preserve project image proportions in the expanded work previews. */
+.project-row[data-project="experiments"] .project-detail > img {
+  height: 340px;
+  object-fit: contain;
+  background: var(--soft);
+}
+.project-row[data-project="hotel-annapurna"] .annapurna-preview > img {
+  height: 300px;
+  object-fit: contain;
+  background: var(--soft);
+}
+@media (max-width: 800px) {
+  .project-row[data-project="experiments"] .project-detail > img,
+  .project-row[data-project="hotel-annapurna"] .annapurna-preview > img {
+    height: auto;
+    max-height: 360px;
+    object-fit: contain;
+  }
+}
