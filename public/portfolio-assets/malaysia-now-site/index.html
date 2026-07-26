@@ -410,9 +410,9 @@
     var scale = Math.max(0.1, Math.min(1, viewportWidth / artboardWidth * fitCompensation));
     if (mobileMode) {
       document.documentElement.style.setProperty('--preview-scale', String(scale));
-      document.documentElement.style.width = '100%';
-      document.body.style.width = '100%';
-      document.body.style.zoom = '1';
+      document.documentElement.style.width = artboardWidth + 'px';
+      document.body.style.width = artboardWidth + 'px';
+      document.body.style.zoom = scale;
       return;
     }
     document.documentElement.style.width = artboardWidth + 'px';

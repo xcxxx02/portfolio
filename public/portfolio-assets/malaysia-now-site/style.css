@@ -2958,20 +2958,19 @@ html,body{overflow-x:hidden}
 
 /* Mobile preview: scale the fixed artboard as one group instead of reflowing its absolute elements. */
 .mobile-preview body {
-  width: 100% !important;
-  zoom: 1 !important;
+  width: 1728px !important;
+  zoom: var(--preview-scale) !important;
   overflow: hidden !important;
 }
 .mobile-preview .macbook-pro {
-  width: 100vw !important;
-  height: calc(1338px * var(--preview-scale)) !important;
+  width: 1728px !important;
+  height: 1338px !important;
   overflow: hidden !important;
 }
 .mobile-preview .macbook-pro .div {
   width: 1728px !important;
   height: 1338px !important;
-  transform: scale(var(--preview-scale));
-  transform-origin: top left;
+  transform: none;
   overflow: hidden !important;
 }
 
