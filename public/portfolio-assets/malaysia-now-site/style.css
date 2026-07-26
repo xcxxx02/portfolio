@@ -2956,6 +2956,13 @@ body{zoom:.26}
 html,body{overflow-x:hidden}
 .macbook-pro,.macbook-pro .div{width:1728px;max-width:none}
 
+/* Real mobile browsers may expose a wide iframe layout viewport. */
+.mobile-preview .macbook-pro .overlap-11,
+.mobile-preview .macbook-pro .overlap-12,
+.mobile-preview .macbook-pro .overlap-13 {
+  display: none;
+}
+
 /* Portfolio preview mobile navigation: keep the fixed design readable after scaling. */
 @media (max-width: 700px) {
   /* The source site is a fixed 1728px artboard. On a phone-sized iframe,
