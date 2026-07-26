@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Lanyard from './components/Lanyard.jsx';
 import './react-lanyard.css';
@@ -9,8 +9,8 @@ function App() {
       <Lanyard
         position={[0, 0, 10]}
         gravity={[0, -40, 0]}
-        frontImage="/portfolio-assets/card-front-blank.svg?v=2"
-        backImage="/portfolio-assets/card-back-blank.svg?v=1"
+        frontImage={`${import.meta.env.BASE_URL}portfolio-assets/card-front-blank.svg?v=2`}
+        backImage={`${import.meta.env.BASE_URL}portfolio-assets/card-back-blank.svg?v=1`}
         imageFit="contain"
         lanyardWidth={0.65}
       />
