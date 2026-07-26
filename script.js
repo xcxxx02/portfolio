@@ -266,7 +266,7 @@ if(dot&&ring&&window.matchMedia('(pointer:fine)').matches&&!reduceMotion){window
   const fitGroup = () => {
     const artboardWidth = 1728;
     const availableWidth = Math.max(1, screen.clientWidth - 16);
-    const scale = Math.min(1, availableWidth / artboardWidth) * 0.84;
+    const scale = Math.min(1, availableWidth / artboardWidth) * 0.30;
     frame.style.width = artboardWidth + 'px';
     frame.style.height = '1177px';
     frame.style.transformOrigin = 'top left';
