@@ -405,8 +405,16 @@
     var artboardWidth = 1728;
     var frame = window.frameElement;
     var viewportWidth = frame ? frame.clientWidth : (window.visualViewport ? window.visualViewport.width : window.innerWidth);
+    var mobileMode = new URLSearchParams(window.location.search).get('mobile') === '1';
     var fitCompensation = 1.025;
     var scale = Math.max(0.1, Math.min(1, viewportWidth / artboardWidth * fitCompensation));
+    if (mobileMode) {
+      document.documentElement.style.setProperty('--preview-scale', String(scale));
+      document.documentElement.style.width = '100%';
+      document.body.style.width = '100%';
+      document.body.style.zoom = '1';
+      return;
+    }
     document.documentElement.style.width = artboardWidth + 'px';
     document.body.style.width = artboardWidth + 'px';
     document.body.style.zoom = scale;

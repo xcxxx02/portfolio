@@ -2956,6 +2956,25 @@ body{zoom:.26}
 html,body{overflow-x:hidden}
 .macbook-pro,.macbook-pro .div{width:1728px;max-width:none}
 
+/* Mobile preview: scale the fixed artboard as one group instead of reflowing its absolute elements. */
+.mobile-preview body {
+  width: 100% !important;
+  zoom: 1 !important;
+  overflow: hidden !important;
+}
+.mobile-preview .macbook-pro {
+  width: 100vw !important;
+  height: calc(1338px * var(--preview-scale)) !important;
+  overflow: hidden !important;
+}
+.mobile-preview .macbook-pro .div {
+  width: 1728px !important;
+  height: 1338px !important;
+  transform: scale(var(--preview-scale));
+  transform-origin: top left;
+  overflow: hidden !important;
+}
+
 /* Real mobile browsers may expose a wide iframe layout viewport. */
 html.mobile-preview,
 html.mobile-preview body {
