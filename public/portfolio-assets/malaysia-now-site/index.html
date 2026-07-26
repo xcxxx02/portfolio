@@ -405,9 +405,17 @@
     var artboardWidth = 1728;
     var frame = window.frameElement;
     var viewportWidth = frame ? frame.clientWidth : (window.visualViewport ? window.visualViewport.width : window.innerWidth);
-    var mobileMode = new URLSearchParams(window.location.search).get('mobile') === '1';
+    var params = new URLSearchParams(window.location.search);
+    var mobileMode = params.get('mobile') === '1';
+    var groupMode = params.get('mode') === 'group';
     var fitCompensation = 1.025;
     var scale = Math.max(0.1, Math.min(1, viewportWidth / artboardWidth * fitCompensation));
+    if (groupMode) {
+      document.documentElement.style.width = artboardWidth + 'px';
+      document.body.style.width = artboardWidth + 'px';
+      document.body.style.zoom = '1';
+      return;
+    }
     if (mobileMode) {
       document.documentElement.style.setProperty('--preview-scale', String(scale));
       document.documentElement.style.width = artboardWidth + 'px';
@@ -427,8 +435,10 @@
 <script>
   // Real phones can report the iframe as a wide layout viewport.
   // Add a device-based hook so the portfolio preview stays readable there too.
-  if (new URLSearchParams(window.location.search).get('mobile') === '1' || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.matchMedia('(pointer: coarse)').matches) {
+  if (new URLSearchParams(window.location.search).get('mode') === 'group' || new URLSearchParams(window.location.search).get('mobile') === '1' || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.matchMedia('(pointer: coarse)').matches) {
     document.documentElement.classList.add('mobile-preview');
+    document.documentElement.classList.add('group-preview');
+    document.documentElement.classList.add('group-preview');
   }
 </script></body>
 </html>

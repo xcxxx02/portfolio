@@ -250,12 +250,29 @@ if(dot&&ring&&window.matchMedia('(pointer:fine)').matches&&!reduceMotion){window
     }
   });
 })();
-// Keep the Malaysia Now iframe on a dedicated mobile preview layout.
+// Scale the complete Malaysia Now page as one fixed-size group on compact screens.
 (() => {
   const frame = document.querySelector('.project-row[data-project="malaysia-now"] iframe');
-  const isMobileViewport = window.matchMedia('(max-width: 800px)').matches || navigator.maxTouchPoints > 0;
-  if (!frame || !isMobileViewport) return;
+  const screen = frame?.closest('.macbook-screen');
+  const compact = window.matchMedia('(max-width: 800px)').matches || navigator.maxTouchPoints > 0;
+  if (!frame || !screen || !compact) return;
+
   const url = new URL(frame.getAttribute('src'), window.location.href);
   url.searchParams.set('mobile', '1');
-  frame.setAttribute('src', ${url.pathname});
+  url.searchParams.set('mode', 'group');
+  frame.setAttribute('src', url.pathname + url.search + url.hash);
+  frame.classList.add('group-preview-frame');
+
+  const fitGroup = () => {
+    const artboardWidth = 1728;
+    const availableWidth = Math.max(1, screen.clientWidth - 16);
+    const scale = Math.min(1, availableWidth / artboardWidth);
+    frame.style.width = artboardWidth + 'px';
+    frame.style.height = '1177px';
+    frame.style.transformOrigin = 'top left';
+    frame.style.transform = 'scale(' + scale + ')';
+    screen.style.overflow = 'hidden';
+  };
+  fitGroup();
+  if (window.ResizeObserver) new ResizeObserver(fitGroup).observe(screen);
 })();

@@ -3018,3 +3018,19 @@ html.mobile-preview body {
     white-space: nowrap;
   }
 }
+
+/* Outer Portfolio owns the scaling for the fixed-page group. */
+.group-preview-frame {
+  display: block !important;
+  border: 0 !important;
+}
+html.group-preview body {
+  width: 1728px !important;
+  zoom: 1 !important;
+  overflow: hidden !important;
+}
+html.group-preview .macbook-pro,
+html.group-preview .macbook-pro .div {
+  width: 1728px !important;
+  transform: none !important;
+}
