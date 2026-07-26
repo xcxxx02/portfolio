@@ -2957,6 +2957,12 @@ html,body{overflow-x:hidden}
 .macbook-pro,.macbook-pro .div{width:1728px;max-width:none}
 
 /* Real mobile browsers may expose a wide iframe layout viewport. */
+html.mobile-preview,
+html.mobile-preview body {
+  overflow-x: hidden !important;
+  overscroll-behavior-x: none;
+}
+
 .mobile-preview .macbook-pro .overlap-11,
 .mobile-preview .macbook-pro .overlap-12,
 .mobile-preview .macbook-pro .overlap-13 {
