@@ -2963,6 +2963,11 @@ html.mobile-preview body {
   overscroll-behavior-x: none;
 }
 
+.mobile-preview .macbook-pro .div {
+  height: 1338px !important;
+  overflow: hidden !important;
+}
+
 .mobile-preview .macbook-pro .overlap-11,
 .mobile-preview .macbook-pro .overlap-12,
 .mobile-preview .macbook-pro .overlap-13 {

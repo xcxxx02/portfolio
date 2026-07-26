@@ -250,3 +250,12 @@ if(dot&&ring&&window.matchMedia('(pointer:fine)').matches&&!reduceMotion){window
     }
   });
 })();
+// Keep the Malaysia Now iframe on a dedicated mobile preview layout.
+(() => {
+  const frame = document.querySelector('.project-row[data-project="malaysia-now"] iframe');
+  const isMobileViewport = window.matchMedia('(max-width: 800px)').matches || navigator.maxTouchPoints > 0;
+  if (!frame || !isMobileViewport) return;
+  const url = new URL(frame.getAttribute('src'), window.location.href);
+  url.searchParams.set('mobile', '1');
+  frame.setAttribute('src', ${url.pathname});
+})();

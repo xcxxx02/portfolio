@@ -419,7 +419,7 @@
 <script>
   // Real phones can report the iframe as a wide layout viewport.
   // Add a device-based hook so the portfolio preview stays readable there too.
-  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.matchMedia('(pointer: coarse)').matches) {
+  if (new URLSearchParams(window.location.search).get('mobile') === '1' || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.matchMedia('(pointer: coarse)').matches) {
     document.documentElement.classList.add('mobile-preview');
   }
 </script></body>
