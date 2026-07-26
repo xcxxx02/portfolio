@@ -255,7 +255,7 @@ if(dot&&ring&&window.matchMedia('(pointer:fine)').matches&&!reduceMotion){window
   const frame = document.querySelector('.project-row[data-project="malaysia-now"] iframe');
   const screen = frame?.closest('.macbook-screen');
   const compact = window.matchMedia('(max-width: 800px)').matches || navigator.maxTouchPoints > 0;
-  if (!frame || !screen || !compact) return;
+  if (!frame || !screen) return;
 
   const url = new URL(frame.getAttribute('src'), window.location.href);
   url.searchParams.set('mobile', '1');
