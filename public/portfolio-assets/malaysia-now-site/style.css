@@ -2955,3 +2955,20 @@ body{zoom:.26}
 /* Responsive canvas sizing override. */
 html,body{overflow-x:hidden}
 .macbook-pro,.macbook-pro .div{width:1728px;max-width:none}
+
+/* Portfolio preview mobile navigation: keep the fixed design readable after scaling. */
+@media (max-width: 700px) {
+  .macbook-pro .menus {
+    left: 660px;
+    width: 720px;
+  }
+  .macbook-pro .text-wrapper-55 { left: 0; }
+  .macbook-pro .text-wrapper-56 { left: 190px; }
+  .macbook-pro .text-wrapper-57 { left: 410px; }
+  .text-wrapper-55 button,
+  .text-wrapper-56 button,
+  .text-wrapper-57 button {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+}
