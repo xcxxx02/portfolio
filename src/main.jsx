@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import InteractiveBackground from './components/InteractiveBackground.jsx';
 import Lanyard from './components/Lanyard.jsx';
 import './react-lanyard.css';
 
@@ -18,6 +19,7 @@ function App() {
   );
 }
 
+createRoot(document.getElementById('background-root')).render(<InteractiveBackground />);
 createRoot(document.getElementById('lanyard-root')).render(<App />);
 
 

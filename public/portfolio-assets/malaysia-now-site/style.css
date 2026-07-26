@@ -2958,6 +2958,16 @@ html,body{overflow-x:hidden}
 
 /* Portfolio preview mobile navigation: keep the fixed design readable after scaling. */
 @media (max-width: 700px) {
+  /* The source site is a fixed 1728px artboard. On a phone-sized iframe,
+     its service cards collapse into the hero copy after browser zooming.
+     Keep the hero readable in the portfolio preview and defer those cards
+     to the full project page. */
+  .macbook-pro .overlap-11,
+  .macbook-pro .overlap-12,
+  .macbook-pro .overlap-13 {
+    display: none;
+  }
+
   .macbook-pro .menus {
     left: 660px;
     width: 720px;
