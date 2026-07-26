@@ -2993,33 +2993,6 @@ html.mobile-preview body {
   display: none;
 }
 
-/* Mobile typography: keep text inside the grouped artboard without changing image geometry. */
-.mobile-preview .macbook-pro .menus {
-  left: 620px;
-  width: 860px;
-}
-.mobile-preview .macbook-pro .text-wrapper-55 { left: 0; width: 180px; }
-.mobile-preview .macbook-pro .text-wrapper-56 { left: 250px; width: 180px; }
-.mobile-preview .macbook-pro .text-wrapper-57 { left: 500px; width: 180px; }
-.mobile-preview .macbook-pro .menus button {
-  width: 180px;
-  padding: 0;
-  font-size: 18px;
-  line-height: 1;
-  white-space: nowrap;
-}
-.mobile-preview .macbook-pro .welcome-to-malaysia {
-  font-size: 68px;
-  line-height: 1.08;
-  white-space: nowrap;
-}
-.mobile-preview .macbook-pro .we-always-try-to-2 {
-  width: 570px;
-  font-size: 14px;
-  line-height: 1.35;
-  white-space: nowrap;
-}
-
 /* Portfolio preview mobile navigation: keep the fixed design readable after scaling. */
 @media (max-width: 700px) {
   /* The source site is a fixed 1728px artboard. On a phone-sized iframe,
