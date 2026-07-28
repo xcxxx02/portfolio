@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .split-container {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 40px;
+        align-items: start;
+    }
+
+    .preview-section {
+        position: sticky;
+        top: 100px;
+    }
+
+    .game-card-preview {
+        background: #1e293b;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #334155;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .preview-img-box {
+        width: 100%;
+        height: 220px;
+        background: #0f172a;
+        position: relative;
+    }
+
+    .preview-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+    }
+
+    .preview-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+    }
+
+    .preview-body { padding: 18px; }
+    .preview-title { font-size: 1.15rem; color: #f1f5f9; font-weight: 700; margin: 0 0 8px 0; }
+    
+    .price-row { display: flex; flex-direction: column; }
+    .preview-old-price { text-decoration: line-through; color: #64748b; font-size: 0.85rem; display: none; }
+    .preview-price { font-size: 1.2rem; color: #4ade80; font-weight: bold; }
+    
+    .preview-discount-tag {
+        position: absolute; 
+        bottom: 10px; 
+        right: 10px; 
+        background: #ef4444; 
+        color: white; 
+        font-weight: bold; 
+        padding: 4px 8px; 
+        border-radius: 4px; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        display: none;
+    }
+</style>
+
+<div style="margin-bottom: 20px;">
+    <a href="/admin_dashboard" style="color:#94a3b8; text-decoration:none;">← Back to Dashboard</a>
+    <h2 style="border-left: 5px solid #3b82f6; padding-left: 15px; margin-top: 10px;">🎮 Add New Game</h2>
+</div>
+
+<div class="split-container">
+    
+    <div class="card">
+        <form method="POST">
+            <h3 style="color:#3b82f6; margin-top:0;">1. Game Details</h3>
+            
+            <label style="color:#94a3b8;">Game Title</label>
+            <input type="text" name="title" id="input-title" required placeholder="e.g. Super Mario" oninput="updatePreview()">
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div>
+                    <label style="color:#94a3b8;">Price ($)</label>
+                    <input type="number" step="0.01" name="price" id="input-price" required placeholder="59.99" oninput="updatePreview()">
+                </div>
+                <div>
+                    <label style="color:#94a3b8;">Stock Quantity</label>
+                    <input type="number" name="stock" required placeholder="100">
+                </div>
+            </div>
+
+            <div style="background: rgba(168, 85, 247, 0.1); padding: 15px; border-radius: 8px; border: 1px dashed #a855f7; margin-bottom: 15px;">
+                <label style="color:#d8b4fe; margin-bottom:5px; display:block; font-weight:bold;">🏷️ Discount (%)</label>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="number" name="discount" id="input-discount" value="0" min="0" max="99" style="margin-bottom:0;" oninput="updatePreview()">
+                    <span style="color:#d8b4fe;">% OFF</span>
+                </div>
+            </div>
+
+            <label style="color:#94a3b8;">Cover Image URL</label>
+            <input type="text" name="image" id="input-image" required placeholder="http://..." oninput="updatePreview()">
+
+            <h3 style="color:#3b82f6; margin-top:20px;">2. Metadata</h3>
+            
+            <label style="color:#94a3b8;">Developer / Publisher</label>
+            <input type="text" name="publisher" required placeholder="Nintendo">
+
+            <label style="color:#94a3b8;">Release Date</label>
+            <input type="text" name="date" required placeholder="YYYY-MM-DD">
+
+            <label style="color:#94a3b8;">Description</label>
+            <textarea name="description" rows="4" placeholder="About the game..."></textarea>
+            
+            <button type="submit" class="btn btn-blue" style="width:100%; margin-top:20px; padding:15px;">+ Add Game to Store</button>
+        </form>
+    </div>
+
+    <div class="preview-section">
+        <h4 style="color:#94a3b8; text-align:center; margin-bottom:15px; text-transform:uppercase; letter-spacing:1px;">Live Preview</h4>
+        
+        <div class="game-card-preview">
+            <div class="preview-img-box">
+                <img id="preview-img" src="" class="preview-img" onerror="this.style.display='none'; document.getElementById('preview-placeholder').style.display='flex'">
+                
+                <div id="preview-placeholder" class="preview-placeholder">
+                    <span style="font-size:2rem;">🖼️</span>
+                    <span style="font-size:0.8rem;">No Image</span>
+                </div>
+                
+                <div style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); color:#38bdf8; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:0.7rem; border:1px solid #38bdf8;">DIGITAL KEY</div>
+                
+                <div id="preview-discount-tag" class="preview-discount-tag">-0%</div>
+            </div>
+
+            <div class="preview-body">
+                <div id="preview-title" class="preview-title">Game Title</div>
+                
+                <div class="price-row">
+                    <div id="preview-old-price" class="preview-old-price">$0.00</div>
+                    <div id="preview-price" class="preview-price">$0.00</div>
+                </div>
+                
+                <div style="margin-top:15px; display:grid; gap:8px;">
+                    <div style="background:#3b82f6; color:white; text-align:center; padding:10px; border-radius:6px; font-weight:bold; font-size:0.9rem;">Add to Cart</div>
+                </div>
+            </div>
+        </div>
+        <p style="text-align:center; color:#64748b; font-size:0.8rem; margin-top:10px;">This is how it will appear to customers.</p>
+    </div>
+</div>
+
+<script>
+    function updatePreview() {
+        const title = document.getElementById('input-title').value;
+        const price = parseFloat(document.getElementById('input-price').value) || 0;
+        const discount = parseInt(document.getElementById('input-discount').value) || 0;
+        const image = document.getElementById('input-image').value;
+
+        document.getElementById('preview-title').innerText = title || "Game Title";
+        
+        const oldPriceEl = document.getElementById('preview-old-price');
+        const priceEl = document.getElementById('preview-price');
+        const tagEl = document.getElementById('preview-discount-tag');
+
+        if (discount > 0) {
+            const finalPrice = price * (1 - discount / 100);
+            oldPriceEl.innerText = "$" + price.toFixed(2);
+            oldPriceEl.style.display = 'block';
+            priceEl.innerText = "$" + finalPrice.toFixed(2);
+            
+            tagEl.innerText = "-" + discount + "%";
+            tagEl.style.display = 'block';
+        } else {
+            oldPriceEl.style.display = 'none';
+            priceEl.innerText = "$" + price.toFixed(2);
+            tagEl.style.display = 'none';
+        }
+        
+        const imgEl = document.getElementById('preview-img');
+        const placeEl = document.getElementById('preview-placeholder');
+        
+        if (image) {
+            imgEl.style.display = 'block';
+            placeEl.style.display = 'none';
+            imgEl.src = image;
+        } else {
+            imgEl.style.display = 'none';
+            placeEl.style.display = 'flex';
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameStore</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+            background-color: #0f172a; 
+            color: #f1f5f9; 
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, select, textarea {
+            background-color: #0f172a !important; 
+            color: #f8fafc !important;
+            border: 1px solid #475569 !important;
+            padding: 12px 15px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            display: block;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+            background-color: #1e293b !important;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #0f172a inset !important;
+            -webkit-text-fill-color: white !important;
+            caret-color: white !important;
+        }
+
+        .navbar {
+            background-color: #1e293b;
+            padding: 0 40px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #38bdf8;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px; 
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+            width: 100%; 
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+            font-size: 0.95rem;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn-blue { background: #3b82f6; color: white; }
+        .btn-blue:hover { background: #2563eb; }
+
+        .btn-green { background: #22c55e; color: white; }
+        .btn-green:hover { background: #16a34a; }
+        
+        .btn-red { background: #ef4444; color: white; }
+        .btn-red:hover { background: #dc2626; }
+
+        #toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .toast {
+            background: #1e293b;
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 280px;
+            border-left: 5px solid #3b82f6;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .toast.show { opacity: 1; transform: translateX(0); }
+        .toast.success { border-left-color: #22c55e; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.info { border-left-color: #3b82f6; }
+        
+        .toast-icon { font-size: 1.4rem; }
+
+        .bundle-grid {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            background: #0f172a;
+        }
+        
+        .bundle-grid img {
+            object-fit: cover;
+            display: block;
+            border: 1px solid rgba(0,0,0,0.2);
+            box-sizing: border-box;
+        }
+
+        .bundle-grid.qty-2 img {
+            width: 50%;
+            height: 100%;
+        }
+
+        .bundle-grid.qty-3 img, 
+        .bundle-grid.qty-4 img {
+            width: 50%;
+            height: 50%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">🎮 GameStore</a>
+        
+        <div class="nav-links">
+            <a href="/">Home</a>
+            
+            {% if session.get('user') %}
+                {% if session.get('role') == 'Admin' %}
+                    <a href="/admin_dashboard" style="color:#f59e0b;">Admin Panel</a>
+                {% endif %}
+                
+                {% if session.get('role') == 'Customer' %}
+                    <a href="/wishlist">Wishlist</a>
+                    <a href="/cart">Cart</a>
+                    <a href="/history">Orders</a>
+                {% endif %}
+                
+                <div style="display:flex; align-items:center; gap:15px; border-left:1px solid #475569; padding-left:20px; margin-left:10px;">
+                    <span style="color:#94a3b8;">Hi, {{ session.get('user') }}</span>
+                    <a href="/logout" style="color:#ef4444; font-size:0.9rem;">Logout</a>
+                </div>
+            {% else %}
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <a href="/login_page">Login</a>
+                    <a href="/register_page" class="btn btn-blue" style="color:white; padding: 8px 18px;">Register</a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div id="flash-messages" 
+         data-messages='[
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {"category": "{{ category }}", "message": "{{ message }}"}{{ "," if not loop.last else "" }}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+         ]'>
+    </div>
+
+    <script>
+        function showToast(text, type) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} show`;
+            
+            let icon = '🔔';
+            if (type === 'success') icon = '✅';
+            if (type === 'error') icon = '⛔';
+            
+            toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${text}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 400);
+            }, 3500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const flashDiv = document.getElementById('flash-messages');
+            if (flashDiv) {
+                try {
+                    const messages = JSON.parse(flashDiv.dataset.messages);
+                    messages.forEach(msg => showToast(msg.message, msg.category));
+                } catch (e) {
+                    console.error("Flash msg error:", e);
+                }
+            }
+        });
+        async function addToCart(event, productId) {
+            event.preventDefault(); 
+
+            try {
+                const response = await fetch(`/add_to_cart/${productId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast(data.message, "success");
+                } else {
+                    showToast(data.message, "error");
+                    if (response.status === 401) {
+                        window.location.href = "/login_page";
+                    }
+                }
+            } catch (error) {
+                showToast("Connection error", "error");
+            }
+        }
+        async function removeFromWishlist(event, productId) {
+            event.preventDefault();
+            if (!confirm("Remove this item from your wishlist?")) return;
+
+            try {
+                const response = await fetch(`/wishlist/remove/${productId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast(data.message, "info");
+                    const itemElement = event.target.closest('.wishlist-item-row');
+                    if (itemElement) {
+                        itemElement.style.opacity = '0';
+                        setTimeout(() => itemElement.remove(), 300);
+                    }
+                } else {
+                    showToast(data.message, "error");
+                }
+            } catch (error) {
+                showToast("Connection error", "error");
+            }
+        }
+    </script>
+</body>
+</html>

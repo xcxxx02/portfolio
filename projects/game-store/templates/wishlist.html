@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <h2 style="border-left: 5px solid #f472b6; padding-left: 15px; margin-bottom: 30px;">❤️ My Wishlist</h2>
+    
+    {% if items %}
+        <div style="display: grid; gap: 15px;">
+            {% for item in items %}
+            <div class="wishlist-item-row" style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s ease;">
+                
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="width: 80px; height: 80px; border-radius: 8px; overflow: hidden; background: #0f172a; flex-shrink: 0;">
+                        {% if item['bundle_imgs'] %}
+                            <div class="bundle-grid qty-{{ item['bundle_imgs']|length }}">
+                                {% for img_url in item['bundle_imgs'] %}
+                                    <img src="{{ img_url }}">
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <img src="{{ item['image'] }}" style="width:100%; height:100%; object-fit:cover;">
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <a href="/product/{{ item['product_id'] }}" style="text-decoration:none;">
+                            <h3 style="margin: 0 0 5px 0; color: #fff;">{{ item['title'] }}</h3>
+                        </a>
+                        
+                        {% if item['discount'] > 0 %}
+                            <div>
+                                <span style="text-decoration: line-through; color: #64748b; font-size: 0.9rem;">${{ item['price'] }}</span>
+                                <span style="color: #4ade80; font-weight: bold; font-size: 1.1rem; margin-left: 5px;">
+                                    ${{ (item['price'] * (1 - item['discount']/100)) | round(2) }}
+                                </span>
+                            </div>
+                        {% else %}
+                            <div style="color: #4ade80; font-weight: bold; font-size: 1.1rem;">${{ item['price'] }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    {% if item['stock_level'] > 0 %}
+                        <button onclick="addToCart(event, {{ item['product_id'] }})" class="btn btn-blue">
+                            🛒 Add to Cart
+                        </button>
+                    {% else %}
+                        <span style="color: #94a3b8; font-weight: bold; background:#0f172a; padding:8px 12px; border-radius:6px; border:1px solid #334155;">
+                            🚫 Out of Stock
+                        </span>
+                    {% endif %}
+                    
+                    <button onclick="removeFromWishlist(event, {{ item['product_id'] }})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:1.2rem;" title="Remove">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 50px; color: #94a3b8; background: #1e293b; border-radius: 12px;">
+            Your wishlist is empty. <a href="/" style="color: #38bdf8;">Go browse games!</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    async function addToCart(event, productId) {
+        event.preventDefault();
+        try {
+            const response = await fetch(`/add_to_cart/${productId}`);
+            const data = await response.json();
+            if (response.ok) {
+                showToast(data.message, "success");
+            } else {
+                showToast(data.message, "error");
+            }
+        } catch (error) {
+            showToast("Connection error", "error");
+        }
+    }
+</script>
+{% endblock %}

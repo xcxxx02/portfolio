@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align: center; padding-top: 50px;">
+    
+    <div class="card" style="display: inline-block; width: 100%; max-width: 350px; text-align: left;">
+        <h2 style="text-align: center; margin-bottom: 20px;">🔐 Login</h2>
+        
+        {% if error %}
+            <div style="background:rgba(239, 68, 68, 0.2); color:#ef4444; padding:10px; border-radius:5px; margin-bottom:15px; text-align:center;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="/login">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Username</label>
+            <input type="text" name="username" placeholder="Enter username" required>
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Password</label>
+            <input type="password" name="password" placeholder="Enter password" required>
+            
+            <br><br>
+            <button type="submit" class="btn btn-blue" style="width:100%; font-size: 16px;">
+                Login
+            </button>
+        </form>
+
+        <div style="text-align:center; margin-top:20px; border-top:1px solid #334155; padding-top:15px;">
+            <span style="color:#94a3b8;">Don't have an account?</span><br>
+            <a href="/register_page" style="color:#38bdf8; font-weight:bold; text-decoration:none;">Create New Account</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
