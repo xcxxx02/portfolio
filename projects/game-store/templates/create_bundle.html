@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .split-container {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 40px;
+        align-items: start;
+    }
+
+    .preview-section {
+        position: sticky;
+        top: 100px;
+    }
+
+    .game-card-preview {
+        background: #1e293b;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #334155;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .preview-img-box {
+        width: 100%;
+        height: 220px;
+        background: #0f172a;
+        position: relative;
+    }
+
+    .preview-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+    }
+
+    .preview-body { padding: 18px; }
+    .preview-title { font-size: 1.15rem; color: #f1f5f9; font-weight: 700; margin: 0 0 8px 0; }
+    
+    .price-row { display: flex; flex-direction: column; }
+    .preview-old-price { text-decoration: line-through; color: #64748b; font-size: 0.85rem; display: none; }
+    .preview-price { font-size: 1.2rem; color: #4ade80; font-weight: bold; }
+    
+    .preview-discount-tag {
+        position: absolute; 
+        bottom: 10px; 
+        right: 10px; 
+        background: #ef4444; 
+        color: white; 
+        font-weight: bold; 
+        padding: 4px 8px; 
+        border-radius: 4px; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        display: none;
+        z-index: 10;
+    }
+
+    .game-checkbox-item { 
+        background: #0f172a; 
+        padding: 12px; 
+        border-radius: 8px; 
+        border: 1px solid #334155; 
+        display: flex; 
+        align-items: center; 
+        transition: background 0.2s; 
+        cursor: pointer; 
+    }
+    .game-checkbox-item:hover { background: #1e293b; border-color: #f59e0b; }
+</style>
+
+<div style="margin-bottom: 20px;">
+    <a href="/admin_dashboard" style="color:#94a3b8; text-decoration:none;">← Back to Dashboard</a>
+    <h2 style="border-left: 5px solid #f59e0b; padding-left: 15px; margin-top: 10px;">📦 Create New Bundle</h2>
+</div>
+
+<div class="split-container">
+    <div class="card">
+        <form method="POST">
+            <h3 style="color:#f59e0b; margin-top:0;">1. Bundle Details</h3>
+            
+            <label style="color:#94a3b8;">Bundle Title</label>
+            <input type="text" name="title" id="input-title" required placeholder="e.g. RPG Collection" oninput="updatePreview()">
+            
+            <label style="color:#94a3b8;">Bundle Description</label>
+            <textarea name="description" rows="3" oninput="updatePreview()" placeholder="Describe what's inside..."></textarea>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div>
+                    <label style="color:#94a3b8;">Bundle Price ($)</label>
+                    <input type="number" step="0.01" name="price" id="input-price" required placeholder="89.99" oninput="updatePreview()">
+                </div>
+                <div>
+                    <label style="color:#94a3b8;">Bundle Stock</label>
+                    <input type="number" name="stock" required placeholder="50">
+                </div>
+            </div>
+
+            <div style="background: rgba(168, 85, 247, 0.1); padding: 15px; border-radius: 8px; border: 1px dashed #a855f7; margin-bottom: 15px;">
+                <label style="color:#d8b4fe; margin-bottom:5px; display:block; font-weight:bold;">🏷️ Discount (%)</label>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="number" name="discount" id="input-discount" value="0" min="0" max="99" style="margin-bottom:0;" oninput="updatePreview()">
+                    <span style="color:#d8b4fe;">% OFF</span>
+                </div>
+            </div>
+
+
+            <h3 style="color:#38bdf8; margin-top:30px;">2. Select Games</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                {% for g in games %}
+                <label class="game-checkbox-item">
+                    <input type="checkbox" name="games" value="{{ g['product_id'] }}" 
+                           data-image="{{ g['image'] }}"
+                           onchange="updatePreview()"
+                           style="width:20px; height:20px; margin-right:12px; margin-bottom:0; accent-color:#f59e0b;">
+                    <div>
+                        <div style="font-weight:bold; color:#f1f5f9;">{{ g['title'] }}</div>
+                        <div style="font-size:0.8rem; color:#94a3b8;">${{ g['price'] }}</div>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button type="submit" class="btn" style="flex:1; background:#f59e0b; color:black; font-weight:bold;">✨ Create Bundle</button>
+                <a href="/admin_dashboard" class="btn btn-red">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="preview-section">
+        <h4 style="color:#94a3b8; text-align:center; margin-bottom:15px; text-transform:uppercase; letter-spacing:1px;">Live Preview</h4>
+        
+        <div class="game-card-preview">
+            <div class="preview-img-box" id="preview-art-container">
+                <div class="preview-placeholder">
+                    <span style="font-size:2rem;">📦</span>
+                    <span style="font-size:0.8rem;">Select games</span>
+                </div>
+            </div>
+            
+            <div style="position:relative; margin-top:-220px; height:220px; pointer-events:none;">
+                <div class="bundle-badge" style="position:absolute; top:10px; right:10px; background:#f59e0b; color:black; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:0.8rem;">BUNDLE</div>
+                <div id="preview-discount-tag" class="preview-discount-tag">-0%</div>
+            </div>
+
+            <div class="preview-body" style="margin-top: 0;">
+                <div id="preview-title" class="preview-title">Bundle Title</div>
+                
+                <div class="price-row">
+                    <div id="preview-old-price" class="preview-old-price">$0.00</div>
+                    <div id="preview-price" class="preview-price">$0.00</div>
+                </div>
+                
+                <div style="margin-top:15px; display:grid; gap:8px;">
+                    <div style="background:#3b82f6; color:white; text-align:center; padding:10px; border-radius:6px; font-weight:bold; font-size:0.9rem;">Add to Cart</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updatePreview() {
+        const title = document.getElementById('input-title').value;
+        const price = parseFloat(document.getElementById('input-price').value) || 0;
+        const discount = parseInt(document.getElementById('input-discount').value) || 0;
+        
+        document.getElementById('preview-title').innerText = title || "Bundle Title";
+        const oldPriceEl = document.getElementById('preview-old-price');
+        const priceEl = document.getElementById('preview-price');
+        const tagEl = document.getElementById('preview-discount-tag');
+
+        if (discount > 0) {
+            const finalPrice = price * (1 - discount / 100);
+            oldPriceEl.innerText = "$" + price.toFixed(2);
+            oldPriceEl.style.display = 'block';
+            priceEl.innerText = "$" + finalPrice.toFixed(2);
+            tagEl.innerText = "-" + discount + "%";
+            tagEl.style.display = 'block';
+        } else {
+            oldPriceEl.style.display = 'none';
+            priceEl.innerText = "$" + price.toFixed(2);
+            tagEl.style.display = 'none';
+        }
+
+        const manualImg = document.getElementById('input-image').value;
+        const artContainer = document.getElementById('preview-art-container');
+        const checkedBoxes = document.querySelectorAll('input[name="games"]:checked');
+        const selectedImgs = Array.from(checkedBoxes).map(cb => cb.dataset.image);
+        
+        let htmlContent = '';
+        if (manualImg) {
+            htmlContent = `<img src="${manualImg}" style="width:100%; height:100%; object-fit:cover;">`;
+        } else if (selectedImgs.length > 0) {
+            const count = Math.min(selectedImgs.length, 4);
+            htmlContent = `<div class="bundle-grid qty-${count}">`;
+            selectedImgs.slice(0, 4).forEach(url => { htmlContent += `<img src="${url}">`; });
+            htmlContent += `</div>`;
+        } else {
+            htmlContent = `<div class="preview-placeholder"><span style="font-size:2rem;">📦</span><span style="font-size:0.8rem;">Select games</span></div>`;
+        }
+        artContainer.innerHTML = htmlContent;
+    }
+    document.addEventListener('DOMContentLoaded', updatePreview);
+</script>
+{% endblock %}

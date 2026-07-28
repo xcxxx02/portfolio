@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; margin-top: 20px; }
+    .game-card { background: #1e293b; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; display: flex; flex-direction: column; height: 100%; border: 1px solid #334155; position: relative; }
+    .game-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); border-color: #38bdf8; }
+    .image-container { width: 100%; height: 220px; position: relative; background: #0f172a; }
+    .game-img { width: 100%; height: 100%; object-fit: cover; }
+    .card-body { padding: 18px; display: flex; flex-direction: column; flex-grow: 1; }
+    .game-title { margin: 0 0 8px 0; font-size: 1.15rem; color: #f1f5f9; font-weight: 700; line-height: 1.4; }
+    
+    .game-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
+    .price-container { display: flex; flex-direction: column; }
+    .original-price { text-decoration: line-through; color: #64748b; font-size: 0.85rem; }
+    .current-price { font-size: 1.2rem; color: #4ade80; font-weight: bold; }
+
+    .card-actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+    
+    .btn-cart { background: #3b82f6; color: white; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; border: none; display: block; cursor: pointer; width: 100%; font-family: inherit; font-size: 1rem; }
+    .btn-cart:hover { background: #2563eb; }
+    
+    .btn-disabled { background: #334155; color: #94a3b8; cursor: not-allowed; text-align: center; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%; }
+    
+    .btn-wishlist { background: none; border: none; text-align: center; color: #f472b6; text-decoration: none; font-size: 0.9rem; padding: 6px; border-radius: 6px; transition: all 0.2s; cursor: pointer; width: 100%; font-family: inherit; }
+    .btn-wishlist:hover { background: rgba(244, 114, 182, 0.1); color: #f9a8d4; }
+    
+    .card-link { text-decoration: none; display: block; color: inherit; }
+    .bundle-badge { position: absolute; top: 10px; right: 10px; background: #f59e0b; color: black; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; z-index: 2; }
+    .digital-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: #38bdf8; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.7rem; border: 1px solid #38bdf8; z-index: 2; }
+</style>
+
+<div style="display:flex; align-items:center; margin-bottom: 20px;">
+    <h2 style="margin:0;">🔥 Trending Now</h2>
+    <div style="flex-grow:1; height:1px; background:#334155; margin-left:20px;"></div>
+</div>
+
+<div class="game-grid">
+{% for game in games %}
+    <div class="game-card">
+        <a href="/product/{{ game['product_id'] }}" class="card-link">
+            <div class="image-container">
+                {% if game['product_type'] == 'Bundle' and game['bundle_imgs'] %}
+                    <div class="bundle-grid qty-{{ game['bundle_imgs']|length }}">
+                        {% for img_url in game['bundle_imgs'] %}
+                            <img src="{{ img_url }}" alt="Game Art">
+                        {% endfor %}
+                    </div>
+                    <div class="bundle-badge">BUNDLE</div>
+                {% else %}
+                    <img src="{{ game['image'] }}" alt="{{ game['title'] }}" class="game-img">
+                    {% if game['product_type'] == 'Bundle' %}
+                        <div class="bundle-badge">BUNDLE</div>
+                    {% else %}
+                        <div class="digital-badge">DIGITAL KEY</div>
+                    {% endif %}
+                {% endif %}
+                
+                {% if game['discount'] > 0 %}
+                    <div style="position: absolute; bottom: 10px; right: 10px; background: #ef4444; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 5;">
+                        -{{ game['discount'] }}%
+                    </div>
+                {% endif %}
+            </div>
+        </a>
+        <div class="card-body">
+            <a href="/product/{{ game['product_id'] }}" class="card-link">
+                <h3 class="game-title">{{ game['title'] }}</h3>
+            </a>
+            
+            <div class="game-meta">
+                <div class="price-container">
+                    {% if game['discount'] > 0 %}
+                        <div class="original-price">${{ game['price'] }}</div>
+                        <div class="current-price">
+                            ${{ (game['price'] * (1 - game['discount']/100)) | round(2) }}
+                        </div>
+                    {% else %}
+                        <div class="current-price">${{ game['price'] }}</div>
+                    {% endif %}
+                </div>
+
+                {% if game['stock_level'] <= 0 %}
+                    <span style="color:#ef4444; font-size:0.85rem; font-weight:bold;">Out of Stock</span>
+                {% endif %}
+            </div>
+            
+            <div class="card-actions">
+                {% if session.get('role') == 'Customer' %}
+                    {% if game['stock_level'] > 0 %}
+                        <button onclick="addToCart(event, {{ game['product_id'] }})" class="btn-cart">
+                            Add to Cart
+                        </button>
+                    {% else %}
+                        <div class="btn-disabled">Out of Stock</div>
+                    {% endif %}
+                    
+                    <button onclick="addToWishlist(event, {{ game['product_id'] }})" class="btn-wishlist">
+                        ❤️ Add to Wishlist
+                    </button>
+                {% else %}
+                    <div style="text-align:center; padding: 10px; background:#0f172a; border-radius:6px; color:#64748b; font-size:0.85rem;">
+                        Login to purchase
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+<script>
+    async function addToCart(event, productId) {
+        event.preventDefault();
+        try {
+            const response = await fetch(`/add_to_cart/${productId}`);
+            const data = await response.json();
+            if (response.ok) {
+                showToast(data.message, "success");
+            } else {
+                showToast(data.message, "error");
+                if (response.status === 401) window.location.href = "/login_page";
+            }
+        } catch (error) {
+            showToast("Connection error", "error");
+        }
+    }
+
+    async function addToWishlist(event, productId) {
+        event.preventDefault();
+        try {
+            const response = await fetch(`/add_to_wishlist/${productId}`);
+            const data = await response.json();
+            if (response.ok) {
+                showToast(data.message, "success");
+            } else {
+                showToast(data.message, "error");
+                if (response.status === 401) window.location.href = "/login_page";
+            }
+        } catch (error) {
+            showToast("Connection error", "error");
+        }
+    }
+</script>
+{% endblock %}

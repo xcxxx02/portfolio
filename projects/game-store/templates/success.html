@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .success-container {
+        text-align: center;
+        padding: 80px 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .success-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        display: inline-block;
+        animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .success-card {
+        background: #1e293b;
+        border: 2px solid #22c55e;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2);
+    }
+
+    .amount-text {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #fff;
+        margin: 10px 0;
+    }
+
+    .message-text {
+        color: #cbd5e1;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+
+    @keyframes pop {
+        0% { transform: scale(0); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+
+<div class="success-container">
+    <div class="success-card">
+        <div class="success-icon">✅</div>
+        
+        <h1 style="margin:0; color:#22c55e;">Payment Successful!</h1>
+        
+        <p class="message-text">
+            {{ msg }}
+        </p>
+
+        <div style="background: #0f172a; padding: 15px; border-radius: 8px; display:inline-block; margin-bottom: 30px; min-width: 200px;">
+            <span style="display:block; color:#94a3b8; font-size:0.9rem;">Total Paid</span>
+            <span class="amount-text">${{ amount }}</span>
+        </div>
+
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <a href="/history" class="btn btn-blue">
+                📜 View Order Receipt
+            </a>
+            <a href="/" class="btn" style="background: #334155;">
+                🏠 Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

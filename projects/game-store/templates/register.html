@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align: center; padding-top: 50px;">
+    
+    <div class="card" style="display: inline-block; width: 100%; max-width: 350px; text-align: left; border: 1px solid #22c55e;">
+        <h2 style="text-align: center; margin-bottom: 20px;">📝 Register</h2>
+        
+        {% if error %}
+            <div style="background:rgba(239, 68, 68, 0.2); color:#ef4444; padding:10px; border-radius:5px; margin-bottom:15px; text-align:center;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="/register">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Username</label>
+            <input type="text" name="username" placeholder="Choose a username" required>
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Password</label>
+            <input type="password" name="password" placeholder="Choose a password" required>
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Select Role</label>
+            <select name="role" style="width: 100%; margin-bottom: 20px;">
+                <option value="customer">Customer (Buy Games)</option>
+                <option value="admin">Admin (Manage Store)</option>
+            </select>
+            
+            <button type="submit" class="btn btn-green" style="width:100%; font-size: 16px;">
+                Create Account
+            </button>
+        </form>
+
+        <div style="text-align:center; margin-top:20px; border-top:1px solid #334155; padding-top:15px;">
+            <span style="color:#94a3b8;">Already registered?</span><br>
+            <a href="/login_page" style="color:#22c55e; font-weight:bold; text-decoration:none;">Login Here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

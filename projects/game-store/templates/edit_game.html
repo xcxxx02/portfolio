@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .split-container { display: grid; grid-template-columns: 1fr 350px; gap: 40px; align-items: start; }
+    .preview-section { position: sticky; top: 100px; }
+    .game-card-preview { background: #1e293b; border-radius: 12px; overflow: hidden; border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
+    .preview-img-box { width: 100%; height: 220px; background: #0f172a; position: relative; }
+    .preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .preview-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #64748b; }
+    .preview-body { padding: 18px; }
+    .preview-title { font-size: 1.15rem; color: #f1f5f9; font-weight: 700; margin: 0 0 8px 0; }
+    .price-row { display: flex; flex-direction: column; }
+    .preview-old-price { text-decoration: line-through; color: #64748b; font-size: 0.85rem; display: none; }
+    .preview-price { font-size: 1.2rem; color: #4ade80; font-weight: bold; }
+    .preview-discount-tag { position: absolute; bottom: 10px; right: 10px; background: #ef4444; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); display: none; }
+</style>
+
+<div style="margin-bottom: 20px;">
+    <a href="/admin_dashboard" style="color:#94a3b8; text-decoration:none;">← Back to Dashboard</a>
+    <h2 style="border-left: 5px solid #3b82f6; padding-left: 15px; margin-top: 10px;">✏️ Edit Game</h2>
+</div>
+
+<div class="split-container">
+    <div class="card">
+        <form method="POST">
+            <h3 style="color:#3b82f6; margin-top:0;">1. Game Details</h3>
+            <label>Game Title</label>
+            <input type="text" name="title" id="input-title" value="{{ game['title'] }}" required oninput="updatePreview()">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div><label>Price ($)</label><input type="number" step="0.01" name="price" id="input-price" value="{{ game['price'] }}" required oninput="updatePreview()"></div>
+                <div><label>Stock</label><input type="number" name="stock" value="{{ game['stock_level'] }}" required></div>
+            </div>
+            <div style="background: rgba(168, 85, 247, 0.1); padding: 15px; border-radius: 8px; border: 1px dashed #a855f7; margin-bottom: 15px;">
+                <label>🏷️ Discount (%)</label>
+                <div style="display:flex; align-items:center; gap:10px;"><input type="number" name="discount" id="input-discount" value="{{ game['discount'] }}" min="0" max="99" oninput="updatePreview()"><span>% OFF</span></div>
+            </div>
+            <label>Cover Image URL</label>
+            <input type="text" name="image" id="input-image" value="{{ game['image'] }}" required oninput="updatePreview()">
+            <h3 style="color:#3b82f6; margin-top:20px;">2. Metadata</h3>
+            <label>Publisher</label><input type="text" name="publisher" value="{{ game['publisher'] }}" required>
+            <label>Release Date</label><input type="text" name="date" value="{{ game['release_date'] }}" required>
+            <label>Description</label><textarea name="description" rows="4">{{ game['description'] }}</textarea>
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button type="submit" class="btn btn-green" style="flex:1;">💾 Save Changes</button>
+                <a href="/admin_dashboard" class="btn btn-red">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <div class="preview-section">
+        <div class="game-card-preview">
+            <div class="preview-img-box"><img id="preview-img" class="preview-img"><div id="preview-placeholder" class="preview-placeholder"><span>🖼️</span></div><div id="preview-discount-tag" class="preview-discount-tag"></div></div>
+            <div class="preview-body"><div id="preview-title" class="preview-title"></div><div class="price-row"><div id="preview-old-price" class="preview-old-price"></div><div id="preview-price" class="preview-price"></div></div></div>
+        </div>
+    </div>
+</div>
+<script>
+    function updatePreview() {
+        const title = document.getElementById('input-title').value;
+        const price = parseFloat(document.getElementById('input-price').value) || 0;
+        const discount = parseInt(document.getElementById('input-discount').value) || 0;
+        const image = document.getElementById('input-image').value;
+        document.getElementById('preview-title').innerText = title || "Game Title";
+        const oldPriceEl = document.getElementById('preview-old-price');
+        const priceEl = document.getElementById('preview-price');
+        const tagEl = document.getElementById('preview-discount-tag');
+        if (discount > 0) {
+            const finalPrice = price * (1 - discount / 100);
+            oldPriceEl.innerText = "$" + price.toFixed(2); oldPriceEl.style.display = 'block';
+            priceEl.innerText = "$" + finalPrice.toFixed(2); tagEl.innerText = "-" + discount + "%"; tagEl.style.display = 'block';
+        } else { oldPriceEl.style.display = 'none'; priceEl.innerText = "$" + price.toFixed(2); tagEl.style.display = 'none'; }
+        const imgEl = document.getElementById('preview-img'); const placeEl = document.getElementById('preview-placeholder');
+        if (image) { imgEl.style.display = 'block'; placeEl.style.display = 'none'; imgEl.src = image; } else { imgEl.style.display = 'none'; placeEl.style.display = 'flex'; }
+    }
+    document.addEventListener('DOMContentLoaded', updatePreview);
+</script>
+{% endblock %}

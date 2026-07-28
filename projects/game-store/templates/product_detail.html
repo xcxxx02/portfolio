@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .detail-container { display: grid; grid-template-columns: 320px 1fr; gap: 40px; }
+    .review-card { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #334155; }
+    .star { color: #fbbf24; font-size: 1.1rem; }
+    select, textarea { background: #0f172a; border: 1px solid #475569; color: #f8fafc; padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; margin-bottom: 15px; }
+    .btn-block { display: block; width: 100%; box-sizing: border-box; text-align: center; border: none; cursor: pointer; }
+    .btn-disabled-lg { background: #334155; color: #94a3b8; cursor: not-allowed; padding: 15px; font-size: 1.1rem; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: bold; border: 1px solid #475569; }
+    
+    .bundle-item-card {
+        background: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 10px;
+        transition: transform 0.2s, border-color 0.2s;
+        text-decoration: none;
+        display: block;
+    }
+    .bundle-item-card:hover {
+        transform: translateY(-5px);
+        border-color: #38bdf8;
+    }
+    .bundle-item-img {
+        width: 100%;
+        aspect-ratio: 2/3; 
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .bundle-grid {
+        display: grid;
+        width: 100%;
+        height: 100%;
+    }
+    .bundle-grid.qty-2 { grid-template-columns: 1fr 1fr; }
+    .bundle-grid.qty-3 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .bundle-grid.qty-3 img:first-child { grid-row: span 2; }
+    .bundle-grid.qty-4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .bundle-grid img { width: 100%; height: 100%; object-fit: cover; border: 1px solid #1e293b; }
+</style>
+
+<div class="detail-container">
+    <div>
+        <div style="width:100%; height:320px; border-radius:12px; border:1px solid #334155; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); overflow:hidden;">
+            {% if product['product_type'] == 'Bundle' and product['bundle_imgs'] %}
+                <div class="bundle-grid qty-{{ product['bundle_imgs']|length }}">
+                    {% for img_url in product['bundle_imgs'] %}
+                        <img src="{{ img_url }}" alt="Game Art">
+                    {% endfor %}
+                </div>
+            {% else %}
+                <img src="{{ product['image'] }}" style="width:100%; height:100%; object-fit:cover;">
+            {% endif %}
+        </div>
+        
+        <div style="background:#1e293b; padding:25px; border-radius:12px; margin-top:25px; text-align:center; border: 1px solid #334155;">
+            
+            {% if product['discount'] > 0 %}
+                <div style="color:#94a3b8; text-decoration: line-through; font-size: 1.1rem; margin-bottom: 5px;">
+                    ${{ product['price'] }}
+                </div>
+                <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom: 5px;">
+                    <h2 style="color:#4ade80; margin:0; font-size: 2.2rem;">
+                        ${{ (product['price'] * (1 - product['discount']/100)) | round(2) }}
+                    </h2>
+                    <span style="background:#ef4444; color:white; padding:4px 8px; border-radius:6px; font-weight:bold;">
+                        -{{ product['discount'] }}%
+                    </span>
+                </div>
+            {% else %}
+                <h2 style="color:#4ade80; margin:0 0 5px 0; font-size: 2.2rem;">${{ product['price'] }}</h2>
+            {% endif %}
+            
+            {% if product['stock_level'] > 0 %}
+                <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:20px;">Digital Key (Global)</p>
+            {% else %}
+                <p style="color:#ef4444; font-size:1rem; font-weight:bold; margin-bottom:20px;">Currently Out of Stock</p>
+            {% endif %}
+            
+            {% if session.get('role') == 'Customer' %}
+                {% if product['stock_level'] > 0 %}
+                    <button onclick="addToCart(event, '{{ product['product_id'] }}')" class="btn btn-blue btn-block" style="padding: 15px; font-size: 1.1rem; margin-bottom: 15px;">
+                        Add to Cart
+                    </button>
+                {% else %}
+                    <div class="btn-disabled-lg">Out of Stock</div>
+                {% endif %}
+                
+                <button onclick="addToWishlist(event, '{{ product['product_id'] }}')" class="btn-block" style="background:none; color:#f472b6; text-decoration:none; padding: 5px; font-family:inherit; font-size:1rem;">
+                    Add to Wishlist ❤️
+                </button>
+            {% else %}
+                <div style="background:#0f172a; padding:15px; border-radius:8px; color:#94a3b8;">
+                    Please <a href="/login_page" style="color:#38bdf8;">Login</a> to purchase
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        <h1 style="margin-top:0; font-size: 2.5rem; line-height: 1.2;">{{ product['title'] }}</h1>
+        <p style="color:#cbd5e1; line-height:1.7; font-size:1.1rem; margin-top: 20px;">{{ product['description'] }}</p>
+
+        {% if product['product_type'] == 'Bundle' %}
+            <h3 style="color:#f59e0b; margin-top:40px; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 20px;">
+                📦 Bundle Contents ({{ bundle_contents|length }} Items)
+            </h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px;">
+                {% for item in bundle_contents %}
+                    <a href="/product/{{ item['product_id'] }}" class="bundle-item-card">
+                        <img src="{{ item['image'] }}" class="bundle-item-img" alt="{{ item['title'] }}">
+                        <div style="text-align:center;">
+                            <p style="margin:0; font-size:0.9rem; font-weight:bold; color:#e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ item['title'] }}
+                            </p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div style="margin-top: 60px; border-top: 1px solid #334155; padding-top: 40px;">
+            <h3 style="margin-bottom: 25px;">⭐ Customer Reviews</h3>
+            {% if session.get('role') == 'Customer' %}
+                <form action="/add_review/{{ product['product_id'] }}" method="POST" style="background:#1e293b; padding:25px; border-radius:12px; margin-bottom:30px; border:1px solid #334155;">
+                    <label style="display:block; color:#94a3b8; margin-bottom:8px;">Rating</label>
+                    <select name="rating" style="max-width: 200px;">
+                        <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                        <option value="4">⭐⭐⭐⭐ (Good)</option>
+                        <option value="3">⭐⭐⭐ (Average)</option>
+                        <option value="2">⭐⭐ (Poor)</option>
+                        <option value="1">⭐ (Terrible)</option>
+                    </select>
+                    <label style="display:block; color:#94a3b8; margin-bottom:8px;">Your Review</label>
+                    <textarea name="comment" rows="3" required placeholder="Share your thoughts..."></textarea>
+                    <button type="submit" class="btn btn-green" style="padding: 10px 25px;">Submit Review</button>
+                </form>
+            {% endif %}
+            {% for review in reviews %}
+                <div class="review-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                        <span style="font-weight:bold; color:#f1f5f9;">{{ review['name'] }}</span>
+                        <span style="color:#64748b; font-size:0.85rem;">{{ review['review_date'] }}</span>
+                    </div>
+                    <div style="margin-bottom:10px; color:#fbbf24;">
+                        {% for i in range(review['rating']) %}★{% endfor %}
+                    </div>
+                    <p style="margin:0; color:#cbd5e1;">{{ review['comment'] }}</p>
+                </div>
+            {% else %}
+                <div style="text-align:center; padding: 40px; color:#64748b; background: #0f172a; border-radius: 12px;">No reviews yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    async function addToCart(event, productId) {
+        event.preventDefault();
+        try {
+            const response = await fetch(`/add_to_cart/${productId}`);
+            const data = await response.json();
+            if (response.ok) {
+                showToast(data.message, "success");
+            } else {
+                showToast(data.message, "error");
+                if (response.status === 401) window.location.href = "/login_page";
+            }
+        } catch (error) {
+            showToast("Connection error", "error");
+        }
+    }
+
+    async function addToWishlist(event, productId) {
+        event.preventDefault();
+        try {
+            const response = await fetch(`/add_to_wishlist/${productId}`);
+            const data = await response.json();
+            if (response.ok) {
+                showToast(data.message, "success");
+            } else {
+                showToast(data.message, "error");
+                if (response.status === 401) window.location.href = "/login_page";
+            }
+        } catch (error) {
+            showToast("Connection error", "error");
+        }
+    }
+</script>
+{% endblock %}
