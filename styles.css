@@ -326,3 +326,23 @@ body{overflow-x:hidden}
 .project-row[data-project="malaysia-now"] .macbook-screen .macbook-page-shot{opacity:1;transform:none}
 /* Game Store assignment preview */
 .game-store-preview{border:1px solid var(--line);background:#fff;box-shadow:8px 8px 0 var(--soft);font:10px "DM Mono",monospace;color:#555;overflow:hidden}.game-store-top{display:flex;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line);letter-spacing:.05em;color:var(--ink)}.game-store-products{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:20px}.game-store-products article{min-width:0}.game-cover{height:132px;position:relative;display:flex;align-items:flex-end;overflow:hidden;padding:11px;color:#fff;font:700 13px Manrope,Arial,sans-serif;line-height:.95;letter-spacing:-.04em;box-shadow:inset 0 -45px 45px #0008}.game-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}.game-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,#000b)}.game-cover span{position:relative;z-index:1}.cover-elden{background:linear-gradient(145deg,#c68b4a,#392719 55%,#111)}.cover-cyber{background:linear-gradient(145deg,#f6d33d,#1c6a76 52%,#17153c)}.cover-god{background:linear-gradient(145deg,#b9d4dd,#49687a 48%,#16202b)}.cover-wukong{background:linear-gradient(145deg,#e0a34d,#743f29 48%,#1c1a1a)}.game-store-products article>div:last-child{display:flex;flex-direction:column;gap:5px;padding-top:9px}.game-store-products b{font:600 11px Manrope,Arial,sans-serif;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.game-store-products span{font-size:10px;color:#888}@media(max-width:800px){.game-store-products{grid-template-columns:repeat(2,1fr);gap:12px;padding:16px}.game-cover{height:100px}}
+/* Munch live mobile preview */
+.project-row[data-project="munch"] .project-detail{grid-template-columns:minmax(340px,1.15fr) minmax(280px,.85fr);align-items:center}
+.project-row[data-project="munch"].expanded .project-detail{max-height:720px;padding-top:22px}
+.munch-preview{position:relative;min-height:548px;display:grid;place-items:center;overflow:hidden;border:1px solid #e4dfad;background:linear-gradient(145deg,#fffdf0 0 58%,#eef0c4 58% 100%);box-shadow:8px 8px 0 var(--soft)}
+.munch-preview:before,.munch-preview:after{content:"";position:absolute;border:1px solid #d9d39b;border-radius:999px}
+.munch-preview:before{width:190px;height:190px;left:-72px;top:-84px}
+.munch-preview:after{width:120px;height:120px;right:-42px;bottom:-38px}
+.munch-device{position:relative;z-index:1;width:264px;height:500px;overflow:hidden;border:8px solid #1c1c1c;border-radius:34px;background:#fff;box-shadow:15px 15px 0 #d8dc7a,0 16px 30px #34351f22}
+.munch-device iframe{display:block;width:390px;height:766px;border:0;background:#fff;transform:scale(.6359);transform-origin:top left}
+.munch-speaker{position:absolute;z-index:2;top:8px;left:50%;width:52px;height:5px;transform:translateX(-50%);border-radius:99px;background:#171717;box-shadow:0 0 0 4px #fff9}
+.munch-preview>p{position:absolute;z-index:2;right:16px;bottom:13px;margin:0;font:9px "DM Mono",monospace;letter-spacing:.08em;color:#777650}
+.detail-links{display:flex;flex-wrap:wrap;gap:7px 18px}
+.detail-links a+a{color:#555}
+@media(max-width:800px){
+  .project-row[data-project="munch"] .project-detail{grid-template-columns:1fr}
+  .project-row[data-project="munch"].expanded .project-detail{max-height:960px;padding-top:18px}
+  .munch-preview{min-height:528px}
+  .munch-device{width:252px;height:480px;border-radius:32px}
+  .munch-device iframe{transform:scale(.6051)}
+}
